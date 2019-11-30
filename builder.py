@@ -1,5 +1,4 @@
 import abc
-import re
 import sys
 if sys.version_info[:2] < (3, 2):
     from xml.sax.saxutils import escape
@@ -14,7 +13,6 @@ def main():
     print("-----")
 
     html_input = create_input(HtmlInputBuilder())
-
     print("wrote", html_input)
 
 
@@ -74,6 +72,10 @@ class AbstractElementBuilder(metaclass=abc.ABCMeta):
     def add_name(self, name):
         pass
 
+    @abc.abstractmethod
+    def add_class(self, element_class):
+        pass
+
 
 class HtmlFormBuilder(AbstractFormBuilder):
 
@@ -118,6 +120,7 @@ class HtmlInputBuilder(AbstractElementBuilder):
     def __init__(self):
         self.input_id = None
         self.name = None
+        self.input_class = None
         self.input_type = None
         self.value = None
         self.placeholder = None
@@ -127,6 +130,9 @@ class HtmlInputBuilder(AbstractElementBuilder):
 
     def add_name(self, name):
         self.name = escape(name)
+
+    def add_class(self, input_class):
+        self.input_class = escape(input_class)
 
     def add_type(self, input_type):
         self.input_type = escape(input_type)
@@ -143,6 +149,8 @@ class HtmlInputBuilder(AbstractElementBuilder):
             input_text += ' id="{}"'.format(self.input_id)
         if self.name:
             input_text += ' name="{}"'.format(self.name)
+        if self.input_class:
+            input_text += ' type="{}"'.format(self.input_class)
         if self.input_type:
             input_text += ' type="{}"'.format(self.input_type)
         if self.value:
